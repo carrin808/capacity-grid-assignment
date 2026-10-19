@@ -89,3 +89,10 @@ left unfinished. Append as you go; a line or two per entry is right.
   containing block. Also fitted the grid to its columns/viewport so only the grid scrolls.
 - On Windows, Docker bind mounts don't forward file events, so Vite didn't hot-reload CSS
   changes; restarting the web container picked them up.
+
+## Final check on the official setup
+
+- `docker compose up --build` (what `make up` runs) on :3000/:8080 with unchanged Compose
+  files: API healthy, web 200, planted numbers correct through the Vite proxy.
+- `docker compose exec web npm test`: 10/10 pass; `tsc --noEmit` clean.
+- PATCH through the proxy: Dee 40 → 48 shows capacity 48 on the next GET; restored to 40.
