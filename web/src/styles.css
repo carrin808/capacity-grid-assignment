@@ -209,16 +209,20 @@ thead .person-col {
 }
 
 .hours-button {
-  border: none;
+  margin-top: 0.15rem;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
   background: none;
-  padding: 0;
-  font-size: 0.85rem;
-  opacity: 0.75;
-  text-decoration: underline dotted;
+  color: inherit;
+  font-size: 0.8rem;
+  opacity: 0.8;
 }
 
-.hours-button:hover:not(:disabled) {
+.hours-button:hover:not(:disabled),
+.hours-button:focus-visible {
   opacity: 1;
+  border-color: currentColor;
 }
 
 .hours-form {
