@@ -33,3 +33,28 @@ left unfinished. Append as you go; a line or two per entry is right.
   shape change.
 - PATCH returns the stored person; 422 for out-of-range hours (0–168), 404 for unknown id.
   Errors are JSON `{error}`; 500s log the cause and return a generic message.
+
+## Web
+
+- Range lives in App (and the URL, so a view can be shared/reloaded); always whole weeks.
+  Prev/next shift by one week; From/To date pickers snap to Monday/Sunday and clamp to 26
+  weeks with a visible note rather than a silent change. People paging survives range
+  changes on purpose — a manager on page 3 moving a week forward stays on page 3.
+- Date math is string/UTC-based. `new Date('2026-01-05')` is UTC midnight, which renders as
+  Sunday in the Americas — the classic week-off-by-one.
+- Loading: skeleton only on first load; afterwards the previous grid stays, dimmed, with a
+  "Loading…" pill. Each fetch has an AbortController, so a slow response for an old range
+  can't replace a newer one. Fetch errors keep the old grid with a banner + retry and say
+  which range is still shown.
+- Save strategy: optimistic overlay + reconciling refetch. Edits live in a Map laid over
+  the last server response (`applyEdits`), not written into it. That makes rollback "stop
+  applying it", and stops a fetch that was in flight during the save from clobbering the
+  new value: a saved edit is only dropped once a fetch *started after* the save lands
+  (`settleEdits`). The refetch keeps the server authoritative for per-week capacity.
+- Failed save: numbers roll back, the row shows what failed, what was kept, Retry/Dismiss.
+  Editing a row is disabled while its save is in flight (avoids out-of-order saves for one
+  person instead of sequencing them).
+- Over-allocation: red cell, bold number, "+N" delta, bar; summary count per page. Zero
+  capacity with any allocation is "over" (Eli).
+- Tests: status rules, edit overlay/settle, ISO-week + DST date math, and a component test
+  for the failed-save rollback and the post-save refetch.
