@@ -23,6 +23,21 @@ body {
   padding: 2rem;
 }
 
+/* The page fits the viewport; only the grid scrolls, so the header row,
+   names and pager stay in view however long the roster is. */
+main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 4rem);
+}
+
+main > section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 h1 {
   font-size: 1.4rem;
   margin: 0 0 0.75rem;
@@ -155,7 +170,10 @@ button:disabled {
 
 .grid-scroll {
   overflow: auto;
-  max-height: 70vh;
+  flex: 0 1 auto;
+  min-height: 8rem;
+  width: fit-content;
+  max-width: 100%;
   border: 1px solid var(--line);
   transition: opacity 120ms;
 }
@@ -169,6 +187,10 @@ table {
   border-collapse: separate;
   border-spacing: 0;
   font-variant-numeric: tabular-nums;
+}
+
+tr > :last-child {
+  border-right: none;
 }
 
 th,
