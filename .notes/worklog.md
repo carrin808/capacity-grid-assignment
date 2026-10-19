@@ -80,3 +80,12 @@ left unfinished. Append as you go; a line or two per entry is right.
 - Pre-aggregated weekly allocation (materialised per person-week) if 2y × thousands is hot.
 - Concurrency: last write wins on weekly_hours; no version/ETag.
 - No auth/authorisation on PATCH.
+
+## Caught while looking at the running grid
+
+- Page had a huge empty area below the grid and a second scrollbar. Cause: each cell's
+  `.sr-only` label is `position: absolute` with no positioned ancestor, so 50 rows of them
+  were laid out against the page, outside the scroll box. Fixed by making `.grid-scroll` the
+  containing block. Also fitted the grid to its columns/viewport so only the grid scrolls.
+- On Windows, Docker bind mounts don't forward file events, so Vite didn't hot-reload CSS
+  changes; restarting the web container picked them up.
