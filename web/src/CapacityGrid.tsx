@@ -172,7 +172,9 @@ export function CapacityGrid({ from, to }: Props) {
               return (
                 <tr key={p.id}>
                   <th scope="row" className="person-col">
-                    <div className="person-name">{p.name}</div>
+                    <div className="person-name" dir="auto">
+                      {p.name}
+                    </div>
                     {isEditing ? (
                       <form className="hours-form" onSubmit={(e) => submitEdit(e, p)}>
                         <input

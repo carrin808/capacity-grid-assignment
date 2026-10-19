@@ -58,3 +58,25 @@ left unfinished. Append as you go; a line or two per entry is right.
   capacity with any allocation is "over" (Eli).
 - Tests: status rules, edit overlay/settle, ISO-week + DST date math, and a component test
   for the failed-save rollback and the post-save refetch.
+
+## Verification against the running API (port 18080 — 8080 was taken by another local project)
+
+- Default range returns Ana 40/0/30, Bo 0/32/8, Cem 0/4/12 of 20, Dee 0/45/40, Eli 0/20/0 of 0 —
+  matches the hand-computed numbers. Bad ranges, >26 weeks, bad limit → 400 with a message.
+- PATCH: 200 returns stored person; -1 → 422; non-number, `{}`, unknown field → 400;
+  unknown id → 404. Restored Cem to 20 afterwards.
+- 26 weeks × 200 people: ~0.7s cold. Fine for now; see deferred.
+- Noticed: allocations never exceed 40h/week for anyone but Dee, so the seed looks generated
+  for full-timers. Part-timers (20/24/32h) are over in ~20–40% of their weeks across the
+  whole history. Left as-is: it's what the data says, and exactly what the view is for.
+- Names include RTL (Hebrew/Arabic), CJK, Greek, Cyrillic and long multi-part names; name cell
+  uses dir="auto" and wraps. Sort is by name then id (DB collation); no locale-aware sort.
+
+## Deferred
+
+- Filter/sort "over-allocated first" server-side (needs the aggregate in the paging query).
+- Virtualised rows instead of 50-row pages; keyset pagination.
+- Holidays / time off / start-end dates in capacity (the per-week `capacity` array is where).
+- Pre-aggregated weekly allocation (materialised per person-week) if 2y × thousands is hot.
+- Concurrency: last write wins on weekly_hours; no version/ETag.
+- No auth/authorisation on PATCH.
